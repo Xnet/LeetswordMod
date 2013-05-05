@@ -26,7 +26,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraftforge.common.EnumHelper;
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
-@Mod(modid = LeetswordCore.modid, name = "Leetsword Mod", version = "#1")
+@Mod(modid = LeetswordCore.modid, name = "Leetsword Mod", version = "#2")
 public class LeetswordCore {
 	public static final String modid = "leetsword";
 

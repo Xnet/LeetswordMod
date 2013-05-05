@@ -18,7 +18,7 @@ public class ItemIngotLeet extends Item {
 	
 	@Override
 	@SideOnly(Side.CLIENT) //Makes sure that only the client side can call this method
-	public void updateIcons(IconRegister IR){
-		this.iconIndex = IR.registerIcon(LeetswordCore.modid + ":" + tex);
+	public void registerIcons(IconRegister IR){
+		this.itemIcon = IR.registerIcon(LeetswordCore.modid + ":" + tex);
 	}
 }

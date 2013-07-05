@@ -4,6 +4,7 @@ package mods.leetsword.src;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -12,15 +13,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.world.World;
 
-public class ItemLeetsword extends ItemSword{
+public class Flann_ItemLeetsword extends ItemSword{
 	
-	public String tex = "";
+	public String t, name;
 	
-	public ItemLeetsword(int i, EnumToolMaterial par2, String t) {
+	public Flann_ItemLeetsword(int i, String displayName, String tex, EnumToolMaterial par2) {
 		super(i, par2);
 		setCreativeTab(CreativeTabs.tabCombat);
-		tex = t;
+		t = tex;
+		name = displayName;
+	}
+	
+	@Override
+	public String getItemDisplayName(ItemStack is){
+		return name;
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -32,7 +40,7 @@ public class ItemLeetsword extends ItemSword{
 	@Override
 	@SideOnly(Side.CLIENT) //Makes sure that only the client side can call this method
 	public void registerIcons(IconRegister IR){
-		this.itemIcon = IR.registerIcon(LeetswordCore.modid + ":" + tex);
+		this.itemIcon = IR.registerIcon(t);
 	}
 	
 	/**
@@ -44,5 +52,11 @@ public class ItemLeetsword extends ItemSword{
     {
         par1ItemStack.damageItem(2, par3EntityLiving);
         return true;
+    }
+	
+	@Override
+	public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6, EntityLiving par7EntityLiving)
+    {
+        return false;
     }
 }

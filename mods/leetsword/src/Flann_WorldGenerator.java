@@ -11,30 +11,21 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.DimensionManager;
 import cpw.mods.fml.common.IWorldGenerator;
 
-public class WorldGenerator implements IWorldGenerator {
+public class Flann_WorldGenerator implements IWorldGenerator {
 
-	public Properties props;
+	public Flann_Properties props;
 	public int oreX, oreY, oreZ;
 	
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world,
 			IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
 		
-		//System.out.println();
-		
-		//dir = new File(DimensionManager.getCurrentSaveRootDirectory() + "\\flann");
-		//props = new Properties(dir + "\\leetsword.cfg");
-		
-		//System.out.println(DimensionManager.getCurrentSaveRootDirectory());
-		//System.out.println(DimensionManager.getCurrentSaveRootDirectory().getParent());
-		//System.out.println(new File(DimensionManager.getCurrentSaveRootDirectory().getParent()).getParent());
-		
 		String dir = new File((new StringBuilder()).append(DimensionManager.getCurrentSaveRootDirectory()).append("/flann/").toString()).getPath();
 		String propsFile = dir + "/leetsword.cfg";
 		if (!new File(dir).exists()){
 			new File(dir).mkdirs();
 		}
-		props = new Properties(propsFile);
+		props = new Flann_Properties(propsFile);
 		
 		oreX = props.getInt("posX", 0);
 		oreY = props.getInt("posY", 0);
@@ -79,19 +70,11 @@ public class WorldGenerator implements IWorldGenerator {
 					oreY = intY;
 					oreZ = intZ;
 					props.save();
-					//System.out.println("Leetore generated: " + oreX + " - " + oreY + " - " + oreZ);
 				}
 			} while (done != true);
-			world.setBlock(intX, intY, intZ, LeetswordCore.oreLeet.blockID);
+			world.setBlock(intX, intY, intZ, CoreLeetsword.oreLeet.blockID);
 		} else {
-			if (world
-					.getBlockId(oreX+1, oreY, oreZ+1) == LeetswordCore.oreLeet.blockID) {
-				//System.out.println("No generation! Leetore already generated! "+ oreX + " - " + oreY+ " - " + oreZ);
-			} else if (world.getBlockId(oreX, oreY,
-					oreZ) == 0) {
-				//System.out.println("Leetore already mined out.");
-			} else {
-				//System.out.println("Error while generating leetOre at "+ oreX + oreY + oreZ);
+			if (world.getBlockId(oreX+1, oreY, oreZ+1) == CoreLeetsword.oreLeet.blockID) {
 			}
 		}
 	}

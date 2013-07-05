@@ -3,13 +3,13 @@ package mods.leetsword.src;
 import java.io.*;
 import java.util.*;
 
-public final class Properties
+public final class Flann_Properties
 {
     private String fileName;
     private List lines;
     private Map props;
 
-    public Properties(String s)
+    public Flann_Properties(String s)
     {
         lines = new ArrayList();
         props = new HashMap();

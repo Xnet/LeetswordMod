@@ -30,7 +30,7 @@ import net.minecraftforge.common.EnumHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
-@Mod(modid = "Leetsword", name = "Leetsword Mod", version = "#3")
+@Mod(modid = "Leetsword", name = "Leetsword Mod", version = "#4")
 public class CoreLeetsword {
 	public static final String texLoc = "leetsword:";
 	
@@ -68,22 +68,31 @@ public class CoreLeetsword {
 			if(enableCoreIngotRedstone)
 				set(coreConfig, "general", "enableIngotRedstone", true);
 		coreConfig.save();
+		
+		init_pre();
 	}
 	
 	@Init
 	public void load(FMLInitializationEvent event) {
-		
+		init();
+	}
+	
+	public void init_pre(){
 		leetsword = new Flann_ItemLeetsword(idSword, "1337sword Of H4x0rness", texLoc+"leetsword", leet).setUnlocalizedName("leetsword");
 		ingotLeet = new Flann_ItemIngotLeet(idIngot, "1337 Ingot", texLoc+"ingotLeet").setUnlocalizedName("ingotLeet");
 		
 		oreLeet = new Flann_BlockOreLeet(idOre, texLoc+"oreLeet", Material.rock).setHardness(6.0F).setResistance(100.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("oreLeet");
 		
 		GameRegistry.registerBlock(oreLeet);
-		MinecraftForge.setBlockHarvestLevel(oreLeet, "pickaxe", 3);
 		
 		//LanguageRegistry.addName(leetsword, "1337sword Of H4x0rness");
 		//LanguageRegistry.addName(ingotLeet, "1337 Ingot");
 		LanguageRegistry.addName(oreLeet, "1337 Ore");
+		
+		GameRegistry.registerWorldGenerator(new Flann_WorldGenerator());
+	}
+	public void init(){
+		MinecraftForge.setBlockHarvestLevel(oreLeet, "pickaxe", 3);
 		
 		OreDictionary.registerOre("swordLeet", leetsword);
 		OreDictionary.registerOre("ingotLeet", ingotLeet);
@@ -91,8 +100,6 @@ public class CoreLeetsword {
 		
 		GameRegistry.addRecipe(new ItemStack(leetsword, 1), " I ", " I ", " S ", 'I', ingotLeet, 'S', Item.stick);
 		GameRegistry.addSmelting(oreLeet.blockID, new ItemStack(ingotLeet, 2),20);
-		
-		GameRegistry.registerWorldGenerator(new Flann_WorldGenerator());
 	}
 	
 	public Property set(Configuration config, String category, String key, boolean defaultValue)

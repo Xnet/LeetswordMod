@@ -30,7 +30,7 @@ import net.minecraftforge.common.EnumHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
-@Mod(modid = "Leetsword", name = "Leetsword Mod", version = "#4")
+@Mod(modid = "Leetsword", name = "Leetsword Mod", version = "#5")
 public class CoreLeetsword {
 	public static final String texLoc = "leetsword:";
 	

@@ -30,7 +30,7 @@ import net.minecraftforge.common.EnumHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
-@Mod(modid = "Leetsword", name = "Leetsword Mod", version = "#5")
+@Mod(modid = "Leetsword", name = "Leetsword Mod", version = "#6")
 public class CoreLeetsword {
 	public static final String texLoc = "leetsword:";
 	
@@ -42,32 +42,57 @@ public class CoreLeetsword {
 	public static boolean enableCoreSteel			= false;
 	public static boolean enableCoreStickSteel		= false;
 	public static boolean enableCoreIngotRedstone	= false;
+	public static boolean commonConfig;
 	
-	public static int idSword, idIngot, idOre;
-	public static Item leetsword, ingotLeet;
+	public static int idSword, idIngot, idBow, idOre;
+	public static Item leetsword, ingotLeet, leetbow;
 	public static Block oreLeet;
 	
-	public static EnumToolMaterial leet = EnumHelper.addToolMaterial("leet", 0, 1, 1.0F, 8000000, 14);
+	public static EnumToolMaterial leet = EnumHelper.addToolMaterial("leet", 0, 1, 1.0F, 8000000-4, 14);
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		config.load();
-			idSword = config.get("item", "leetsword", ItemID + 0).getInt();
-			idIngot = config.get("item", "ingotLeet", ItemID + 1).getInt();
-			
-			idOre 	= config.get("block", "oreLeet", BlockID + 0).getInt();
-		config.save();
+		String categoryBlock, categoryItem, categoryGeneral, categoryEnable, categoryGeneralCore;
 		
 		Configuration coreConfig = new Configuration(new File(event.getSuggestedConfigurationFile().getPath().replace("Leetsword", "FlannCore")));
 		coreConfig.load();
+			commonConfig = coreConfig.get("core", "combineConfigs", false).getBoolean(false);
+			if(commonConfig){
+				String modname = "leetsword";
+				categoryBlock = modname+"_Block";
+				categoryItem = modname+"_Item";
+				categoryGeneral = modname+"_General";
+				categoryEnable = modname+"_Enable";
+				categoryGeneralCore = "core_General";
+			}else{
+				categoryBlock = "block";
+				categoryItem = "item";
+				categoryGeneral = "general";
+				categoryEnable = "enable";
+				categoryGeneralCore = "general";
+			}
 			if(enableCoreSteel)
-				set(coreConfig, "general", "enableSteel", true);
+				set(coreConfig, categoryGeneralCore, "enableSteel", true);
 			if(enableCoreStickSteel)
-				set(coreConfig, "general", "enableStickSteel", true);
+				set(coreConfig, categoryGeneralCore, "enableStickSteel", true);
 			if(enableCoreIngotRedstone)
-				set(coreConfig, "general", "enableIngotRedstone", true);
+				set(coreConfig, categoryGeneralCore, "enableIngotRedstone", true);
 		coreConfig.save();
+		
+		Configuration config;
+		if(commonConfig == false){
+			config = new Configuration(event.getSuggestedConfigurationFile());
+		}else{
+			config = coreConfig;
+		}
+		
+		config.load();
+			idSword = config.get(categoryItem, "leetsword", ItemID + 0).getInt();
+			idIngot = config.get(categoryItem, "ingotLeet", ItemID + 1).getInt();
+			idBow 	= config.get(categoryItem, "leetbow"	, ItemID + 2).getInt();
+			
+			idOre 	= config.get(categoryBlock, "oreLeet", BlockID + 0).getInt();
+		config.save();
 		
 		init_pre();
 	}
@@ -80,13 +105,12 @@ public class CoreLeetsword {
 	public void init_pre(){
 		leetsword = new Flann_ItemLeetsword(idSword, "1337sword Of H4x0rness", texLoc+"leetsword", leet).setUnlocalizedName("leetsword");
 		ingotLeet = new Flann_ItemIngotLeet(idIngot, "1337 Ingot", texLoc+"ingotLeet").setUnlocalizedName("ingotLeet");
+		leetbow	  = new Flann_ItemLeetbow(idBow, "1337 Bow").setUnlocalizedName("leetbow").setTextureName(texLoc+"leetbow");
 		
 		oreLeet = new Flann_BlockOreLeet(idOre, texLoc+"oreLeet", Material.rock).setHardness(6.0F).setResistance(100.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("oreLeet");
 		
 		GameRegistry.registerBlock(oreLeet);
 		
-		//LanguageRegistry.addName(leetsword, "1337sword Of H4x0rness");
-		//LanguageRegistry.addName(ingotLeet, "1337 Ingot");
 		LanguageRegistry.addName(oreLeet, "1337 Ore");
 		
 		GameRegistry.registerWorldGenerator(new Flann_WorldGenerator());
@@ -96,10 +120,12 @@ public class CoreLeetsword {
 		
 		OreDictionary.registerOre("swordLeet", leetsword);
 		OreDictionary.registerOre("ingotLeet", ingotLeet);
+		OreDictionary.registerOre("bowLeet", leetbow);
 		OreDictionary.registerOre("oreLeet", oreLeet);
 		
 		GameRegistry.addRecipe(new ItemStack(leetsword, 1), " I ", " I ", " S ", 'I', ingotLeet, 'S', Item.stick);
 		GameRegistry.addSmelting(oreLeet.blockID, new ItemStack(ingotLeet, 2),20);
+		GameRegistry.addRecipe(new ItemStack(leetbow, 1), " #@", "$ @", " #@", '@', Item.silk, '$', Item.stick, '#', ingotLeet);
 	}
 	
 	public Property set(Configuration config, String category, String key, boolean defaultValue)
